@@ -83,23 +83,24 @@ export default {
       that.park_id = that.totalInfo[0]
       that.vehicle_id = that.totalInfo[1].value
       console.log(that.vehicle_id)
-      // this.axios
-      //   .post(
-      //     'http://localhost:8088/autowise/vehicle-operation/static/php/totalData.php?vehicle_id=arts16_1',
-      //     { vehicle_id: '' },
-      //     {
-      //       useLoading: true
-      //     }
-      //   )
-      //   .then(function (data) {
-      //     bus.$emit('totalInfo', data)
-      //   })
-      //   .catch(function (err) {
-      //     that.$message({
-      //       message: err,
-      //       type: 'error'
-      //     })
-      //   })
+      this.axios
+        .post(
+          '/api/vehicle/total',
+          { vehicle_id: that.vehicle_id, park_id: that.park_id, interval: 'year' },
+          {
+            useLoading: true
+          }
+        )
+        .then(function (data) {
+          console.log(data)
+          bus.$emit('totalInfo', data.datas)
+        })
+        .catch(function (err) {
+          that.$message({
+            message: err,
+            type: 'error'
+          })
+        })
       this.axios
         .post(
           '/api/vehicle/daily',

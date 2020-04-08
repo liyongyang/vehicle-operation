@@ -2,16 +2,13 @@
   <div class="formData">
     <el-tabs v-model="activeName">
       <el-tab-pane label="E_Stop"
-                   name="E_Stop"
-                   @click="getdata(activeName)">
+                   name="e_stop">
       </el-tab-pane>
       <el-tab-pane label="take_over"
-                   name="take_over"
-                   @click="getdata()">
+                   name="takeover">
       </el-tab-pane>
       <el-tab-pane label="TandE"
-                   name="TandE"
-                   @click="getdata()">
+                   name="eandt">
       </el-tab-pane>
     </el-tabs>
     <el-table ref="filterTable"
@@ -19,7 +16,8 @@
               element-loading-text="拼命加载中"
               element-loading-spinner="el-icon-loading"
               element-loading-background="rgba(0, 0, 0, 0.8)"
-              :data="formData"
+              :data="formData
+              .slice((currentPage-1)*pageSize,currentPage*pageSize)"
               border
               stripe
               style="width: 100%;text-align: center;">
@@ -34,15 +32,8 @@
                        prop="type"
                        width="120">
         <template slot-scope="scope">
-          <el-tag type="success"
-                  effect="dark"
-                  v-if="scope.row.type == 1">E_stop</el-tag>
-          <el-tag type="success"
-                  effect="dark"
-                  v-if="scope.row.type == 2">takeOver</el-tag>
-          <el-tag type="success"
-                  effect="dark"
-                  v-if="scope.row.type == 3">E&T</el-tag>
+          <el-tag type="warning"
+                  effect="dark">{{activeName}}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="vehicle_id"
@@ -80,7 +71,7 @@
       <el-table-column label="单次接管距离"
                        width="240">
         <template slot-scope="scope">
-          <span>loading</span>
+          <span>{{scope.row.es_distance}}</span>
         </template>
       </el-table-column>
       <el-table-column prop="tag"
@@ -95,7 +86,7 @@
       <el-table-column label="接管描述"
                        width="280">
         <template slot-scope="scope">
-          <el-input v-model="scope.row.submit_val"
+          <el-input v-model="scope.row.cause_desc"
                     placeholder="原因描述"></el-input>
         </template>
       </el-table-column>
@@ -113,14 +104,14 @@
       </el-table-column>
     </el-table>
     <div class="change-page">
-      <!-- <el-pagination @size-change="handleSizeChange"
+      <el-pagination @size-change="handleSizeChange"
                      @current-change="handleCurrentChange"
                      :current-page="currentPage"
                      :page-sizes="[5,10,14]"
                      :page-size="pageSize"
                      layout="total, sizes, prev, pager, next, jumper"
                      :total="formData.length">
-      </el-pagination> -->
+      </el-pagination>
     </div>
   </div>
 </template>
@@ -130,7 +121,7 @@ export default {
   data () {
     return {
       loading: '',
-      activeName: 'E_Stop',
+      activeName: 'e_stop',
       formData: [],
       tableData: [], // 数据
       currentPage: 1, // 默认显示第一页
@@ -145,42 +136,41 @@ export default {
   },
   // 监控
   watch: {
-    // formData (formData) {
-    //   for (let i = 0; i < formData.length; i++) {
-    //     this.arr[i] = formData[i].vehicle_id
-    //   }
-    //   this.$nextTick(function () {
-    //     let vehicle2 = Array.from(new Set(this.arr))
-    //     for (let j = 0; j < vehicle2.length; j++) {
-    //       this.vehicle.push({ text: vehicle2[j], value: vehicle2[j] })
-    //     }
-    //   })
-    // },
-    formData () {
-      return this.formData
+    cause_desc (e) {
+      return this.tableData.cause_desc
     },
-    submit_val (e) {
-      return this.tableData.submit_info
+    activeName (value) {
+      this.getData(value)
     }
   },
 
   // 方法
   methods: {
-    getData (activeName) {
+    getData (type) {
       let that = this
-      console.log(activeName)
       that.axios
         .post(
           '/api/vehicle/etform-obtain',
-          { 'type': 'E_stop', 'pageNum': 3, 'pageSize': 20 },
+          { 'type': that.activeName, 'pageNum': 1, 'pageSize': 50 },
           {
             useLoading: true
           }
         )
         .then(function (data) {
-          console.log(data.datas[0].result)
-          // if ()
+          // console.log(data)
           that.formData = data.datas[0].result
+          that.$nextTick(function () {
+            for (let i = 0; i < that.formData.length; i++) {
+              this.arr[i] = that.formData[i].vehicle_id
+            }
+            this.$nextTick(function () {
+              let vehicle2 = Array.from(new Set(this.arr))
+              for (let j = 0; j < vehicle2.length; j++) {
+                this.vehicle.push({ text: vehicle2[j], value: vehicle2[j] })
+              }
+            })
+            this.vehicle = []
+          })
         })
         .catch(function (err) {
           that.$message({
@@ -211,18 +201,66 @@ export default {
       return row[property] === value
     },
     handleEdit (index, row) {
-      console.log(index, row)
+      let that = this
+      console.log(row.id)
       const h = this.$createElement
-      this.$message({
-        message: h('div', null, [
-          h('span', null, '你的接管描述： '),
-          h('div', { style: 'color: teal' }, row.submit_val)
+      this.$msgbox({
+        title: '消息',
+        message: h('p', null, [
+          h('span', null, '你的接管描述：'),
+          h('i', { style: 'color: teal' }, row.cause_desc)
         ]),
-        type: 'success'
+        showCancelButton: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        beforeClose: (action, instance, done) => {
+          if (action === 'confirm') {
+            instance.confirmButtonLoading = true
+            instance.confirmButtonText = '执行中...'
+            setTimeout(() => {
+              that.axios
+                .post(
+                  '/api/vehicle/handle',
+                  { 'id': row.id, 'cause_desc': row.cause_desc },
+                  {
+                    useLoading: true
+                  }
+                )
+                .then(function (data) {
+                  console.log(data)
+                })
+                .catch(function (err) {
+                  that.$message({
+                    message: err,
+                    type: 'error'
+                  })
+                })
+              done()
+              setTimeout(() => {
+                instance.confirmButtonLoading = false
+              }, 300)
+            }, 500)
+          } else {
+            done()
+          }
+        }
+      }).then(action => {
+        this.$message({
+          type: 'success',
+          message: 'success'
+        })
       })
     },
     handleDelete (index, row) {
-      console.log(index, row)
+      // console.log(index, row)
+      let h = this.$createElement
+      this.$message({
+        message: h('p', null, [
+          h('span', null, '该模块功能'),
+          h('i', { style: 'color: teal' }, '待讨论')
+        ]),
+        type: 'error'
+      })
     }
   },
   // 生命周期 - 创建完成（可以访问当前this实例）
@@ -231,7 +269,8 @@ export default {
   },
   // 生命周期 - 挂载完成（可以访问DOM元素）
   mounted () {
-    this.getData()
+    let type = 'e_stop'
+    this.getData(type)
   }
 }
 </script>

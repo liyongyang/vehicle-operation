@@ -3,18 +3,17 @@
     <el-tabs v-model="activeName">
       <el-tab-pane label="daily"
                    name="first">
-        <dailyMsg :vehicle_id='vehicle_id'></dailyMsg>
+        <dailyMsg></dailyMsg>
       </el-tab-pane>
       <el-tab-pane label="total"
                    name="second">
-        <totalMsg :vehicle_id='vehicle_id'></totalMsg>
+        <totalMsg></totalMsg>
       </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 
 <script>
-import bus from './util/msgbus'
 import dailyMsg from './vehicleInfo/dailyMsg'
 import totalMsg from './vehicleInfo/totalMsg'
 export default {
@@ -37,9 +36,6 @@ export default {
   },
   // 生命周期 - 创建完成（可以访问当前this实例）
   created () {
-    bus.$on('vehicle_id', (res) => {
-      this.vehicle_id = res
-    })
   },
   // 生命周期 - 挂载完成（可以访问DOM元素）
   mounted () {

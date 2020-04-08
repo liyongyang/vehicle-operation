@@ -2,7 +2,7 @@
   <div class="echarts">
     <el-divider v-if="!isShow"
                 content-position="left"><i class="el-icon-loading"></i> 选择你想查看的车辆数据. . .</el-divider>
-    <div v-bind:style="{display:!isShow ? 'block':'none'}">
+    <div v-bind:style="{display:isShow ? 'block':'none'}">
       <el-tabs>
         <el-tab-pane label="最近数据波动">
           <recEchart></recEchart>
@@ -331,20 +331,20 @@ export default {
   // 生命周期 - 挂载完成（可以访问DOM元素）
   mounted () {
     bus.$on('totalInfo', res => {
-      this.totalInfo = res.total
+      this.totalInfo = res
       console.log(this.totalInfo)
-      for (let i = 0; i < res.total.length; i++) {
+      for (let i = 0; i < res.length; i++) {
         this.$nextTick(function () {
-          this.dayData[i] = res.total[i].day
-          this.total_running_time[i] = res.total[i].total_running_time
-          this.total_running_length[i] = res.total[i].total_running_length
-          this.total_jira_commit_counts[i] = res.total[i].total_jira_commit_counts
-          this.total_take_over_counts[i] = res.total[i].total_take_over_counts
-          this.total_emergency_stop_counts[i] = res.total[i].total_emergency_stop_counts
-          this.total_take_over_duration[i] = res.total[i].total_take_over_duration
-          this.total_emergency_stop_duration[i] = res.total[i].total_emergency_stop_duration
-          this.total_fault_counts[i] = res.total[i].total_fault_counts
-          this.total_accident_counts[i] = res.total[i].total_accident_counts
+          this.dayData[i] = res[i].day
+          this.total_running_time[i] = res[i].total_running_time
+          this.total_running_length[i] = res[i].total_running_length
+          this.total_jira_commit_counts[i] = res[i].total_jira_commit_counts
+          this.total_take_over_counts[i] = res[i].total_take_over_counts
+          this.total_emergency_stop_counts[i] = res[i].total_emergency_stop_counts
+          this.total_take_over_duration[i] = res[i].total_take_over_duration
+          this.total_emergency_stop_duration[i] = res[i].total_emergency_stop_duration
+          this.total_fault_counts[i] = res[i].total_fault_counts
+          this.total_accident_counts[i] = res[i].total_accident_counts
         })
       }
       // console.log(this.total_running_length)

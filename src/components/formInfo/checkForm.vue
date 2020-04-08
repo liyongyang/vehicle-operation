@@ -1,35 +1,35 @@
 <template>
-  <div class="total-mesage">
-    <totalOption></totalOption>
-    <Aechart></Aechart>
+  <div class='check-form'>
+    <h2>rijianbiao </h2>
   </div>
 </template>
 
 <script>
-import Aechart from './Aechart'
-import totalOption from './totalOption'
+
 export default {
-  components: { Aechart, totalOption },
+  components: {},
   data () {
-    return {}
+    return {
+
+    }
   },
   // 监听
   computed: {},
   // 监控
-  watch: {
-  },
+  watch: {},
   // 方法
   methods: {
+
   },
   // 生命周期 - 创建完成（可以访问当前this实例）
   created () {
+
   },
   // 生命周期 - 挂载完成（可以访问DOM元素）
   mounted () {
+
   }
 }
 </script>
-
 <style scoped>
-@import "../../assets/style.css";
 </style>

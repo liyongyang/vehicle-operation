@@ -66,6 +66,7 @@ export default {
           }
           // console.log(that.arr)
           let vehicleArr = Array.from(new Set(that.arr))
+          that.$emit('vehicleArr', vehicleArr)
           that.options = vehicleArr
           // console.log(that.options)
         })

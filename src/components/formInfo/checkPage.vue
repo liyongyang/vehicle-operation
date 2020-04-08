@@ -1,92 +1,145 @@
 <template>
   <div class="check-page">
-    <div>
-      <el-form :model="ruleForm"
-               :rules="rules"
-               ref="ruleForm"
-               label-width="100px"
-               class="demo-ruleForm">
-        <el-form-item label="活动名称"
-                      prop="name"
-                      :required="isHaveTo">
-          <el-input v-model="ruleForm.name"></el-input>
-        </el-form-item>
-        <el-form-item label="活动区域"
-                      prop="region">
-          <el-select v-model="ruleForm.region"
-                     placeholder="请选择活动区域"
-                     style="width:100%">
-            <el-option label="必填"
-                       value="0"></el-option>
-            <el-option label="非必填"
-                       value="1"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary"
-                     @click="submitForm('ruleForm')">提交</el-button>
-        </el-form-item>
-      </el-form>
+    <div class="header">
+      <div class="nav-search">
+        <i class="el-icon-location-information"></i>
+        <el-select v-model="vehicle_id"
+                   placeholder="请选择车辆"
+                   @change="getVehicle_id()">
+          <el-option v-for="item in options"
+                     :key="item.index"
+                     :label="item.label"
+                     :value="item">
+          </el-option>
+        </el-select>
+      </div>
+      <el-breadcrumb separator="/"
+                     class="bread-crumb">
+        <el-breadcrumb-item :to="{ path: '/' }"> Home </el-breadcrumb-item>
+        <el-breadcrumb-item v-model="vehicle_item"
+                            v-text="vehicle_item"></el-breadcrumb-item>
+      </el-breadcrumb>
     </div>
+    <checkForm></checkForm>
   </div>
 </template>
 
 <script>
+import bus from '../util/msgbus'
+import checkForm from './checkForm'
 export default {
-  props: {
-    activeName: String
+  components: {
+    checkForm
   },
   data () {
-    // 验证活动名称的函数
-    let validateName = (rule, value, callback) => {
-      // 当活动名称为空值且为必填时，抛出错误，反之通过校验
-      if (this.ruleForm.name === '' && this.isHaveTo) {
-        callback(new Error('请输入活动名称'))
-      } else {
-        callback()
-      }
-    }
     return {
-      ruleForm: {
-        name: '',
-        region: ''
-      },
-      rules: {
-        name: [{ validator: validateName }],
-        region: [
-          { required: true, message: '请选择类型', trigger: 'blur' }
-        ]
-      }
+      arr: [],
+      options: [],
+      vehicle_id: ''
     }
   },
   // 监听
   computed: {
-    isHaveTo: function () {
-      return this.ruleForm.region !== `1`
+    vehicle_item: function () {
+      return this.vehicle_id
     }
-
   },
   // 监控
   watch: {
+    options () {
+      return this.options
+    }
   },
-
   // 方法
   methods: {
-    submitForm (formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          console.log(`已提交表单`)
-        } else {
-          console.log('error submit!!')
-          return false
-        }
+    getLIst () {
+      let that = this
+      this.axios
+        .get(
+          '/api/vehicle/draw-list',
+          {},
+          {
+            useLoading: true
+          }
+        )
+        .then(function (data) {
+          console.log(data.datas)
+          bus.$emit('vehicle_park', data.datas)
+          for (let i = 0; i < data.datas.length; i++) {
+            for (let j = 0; j < data.datas[i].children.length; j++) {
+              that.arr.push(data.datas[i].children[j].value)
+            }
+          }
+          let vehicleArr = Array.from(new Set(that.arr))
+          that.options = vehicleArr
+        })
+        .catch(function (err) {
+          that.$message({
+            message: err,
+            type: 'error'
+          })
+        })
+    },
+    openFullScreen (time) {
+      const loading = this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.5)'
       })
+      setTimeout(() => loading.close(), time)
+    },
+    handleSelect (key, keyPath) {
+      console.log(key, keyPath)
+    },
+    getVehicle_id () {
+      let that = this
+      console.log(that.vehicle_id)
+      that.openFullScreen(500)
+      that.axios
+        .post(
+          '/api/vehicle/checkform',
+          {
+            'vehicle_id': that.vehicle_id
+          },
+          {
+            useLoading: true
+          }
+        )
+        .then(function (data) {
+          // console.log(data)
+          let dailyData = data.datas[0]
+          that.$emit('change-vehicle', dailyData)
+          that.dailyData = data.daily[0]
+        })
+        .catch(function (err) {
+          that.$message({
+            message: err,
+            type: 'error'
+          })
+        })
     }
   },
   // 生命周期 - 创建完成（可以访问当前this实例）
-  created () { },
+  created () {
+
+  },
   // 生命周期 - 挂载完成（可以访问DOM元素）
   mounted () {
+    this.getLIst()
   }
 }
 </script>
+<style scoped>
+.header {
+  display: flex;
+  flex-direction: row;
+  padding-bottom: 18px;
+  text-align: center;
+}
+.bread-crumb {
+  text-align: center;
+  line-height: 40px;
+  margin: 0 20px;
+}
+</style>
