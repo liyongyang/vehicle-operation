@@ -120,7 +120,6 @@ export default {
       let that = this
       that.park_id = that.totalInfo[0]
       that.vehicle_id = that.totalInfo[1].value
-      console.log(that.park_id, that.vehicle_id, that.activeName)
       that.axios
         .post(
           '/api/vehicle/total',
@@ -130,8 +129,6 @@ export default {
           }
         )
         .then(function (data) {
-          console.log(data)
-          // that.allData = data.datas
           bus.$emit('allData', data.datas)
         })
         .catch(function (err) {

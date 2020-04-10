@@ -63,7 +63,6 @@ export default {
           }
         )
         .then(function (data) {
-          console.log(data.datas)
           for (let i = 0; i < data.datas.length; i++) {
             for (let j = 0; j < data.datas[i].children.length; j++) {
               that.arr.push(data.datas[i].children[j].value)
@@ -90,7 +89,6 @@ export default {
     },
     getVehicle_id () {
       let that = this
-      console.log(that.vehicle_id)
       that.openFullScreen(500)
       that.axios
         .post(

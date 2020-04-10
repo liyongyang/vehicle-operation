@@ -1,6 +1,6 @@
 <template>
   <div class='check-form'>
-    <h2>rijianbiao </h2>
+    <h2>待开发... </h2>
   </div>
 </template>
 

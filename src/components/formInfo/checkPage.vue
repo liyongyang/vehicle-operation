@@ -63,7 +63,6 @@ export default {
           }
         )
         .then(function (data) {
-          console.log(data.datas)
           bus.$emit('vehicle_park', data.datas)
           for (let i = 0; i < data.datas.length; i++) {
             for (let j = 0; j < data.datas[i].children.length; j++) {

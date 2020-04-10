@@ -202,7 +202,6 @@ export default {
     },
     handleEdit (index, row) {
       let that = this
-      console.log(row.id)
       const h = this.$createElement
       this.$msgbox({
         title: '消息',
@@ -227,7 +226,6 @@ export default {
                   }
                 )
                 .then(function (data) {
-                  console.log(data)
                 })
                 .catch(function (err) {
                   that.$message({
@@ -247,7 +245,7 @@ export default {
       }).then(action => {
         this.$message({
           type: 'success',
-          message: 'success'
+          message: '提交成功'
         })
       })
     },

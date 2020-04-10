@@ -166,7 +166,6 @@ export default {
   mounted () {
     bus.$on('allData', res => {
       this.allData = res
-      console.log(this.allData)
       for (let i = 0; i < res.length; i++) {
         this.$nextTick(function () {
           this.dayData[i] = res[i].day
