@@ -5,8 +5,6 @@
         <el-menu class="el-menu-vertical-demo"
                  router
                  unique-opened
-                 @open="handleOpen"
-                 @close="handleClose"
                  background-color="#0747a6"
                  text-color="#fff"
                  active-text-color="#ffd04b">
@@ -47,12 +45,6 @@ export default {
     }
   },
   methods: {
-    handleOpen (key, keyPath) {
-      console.log(key, keyPath)
-    },
-    handleClose (key, keyPath) {
-      console.log(key, keyPath)
-    }
   }
 }
 </script>
