@@ -24,9 +24,8 @@
 
 <script>
 import bus from '../util/msgbus'
-import dailyOption from './dailyOption'
 export default {
-  components: { dailyOption },
+  components: {},
   data () {
     return {
       dailyData: []

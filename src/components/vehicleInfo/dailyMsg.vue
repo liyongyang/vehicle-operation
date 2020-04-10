@@ -20,15 +20,15 @@
                             v-text="vehicle_item"></el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <dailyOption :dailyData=dailyData></dailyOption>
+    <dailyChart :dailyData=dailyData></dailyChart>
   </div>
 </template>
 
 <script>
 import bus from '../util/msgbus'
-import dailyOption from './dailyOption'
+import dailyChart from './dailyChart'
 export default {
-  components: { dailyOption },
+  components: { dailyChart },
   data () {
     return {
       arr: [],
