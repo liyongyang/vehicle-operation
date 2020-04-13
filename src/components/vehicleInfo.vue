@@ -1,11 +1,11 @@
 <template>
   <div class="daily-page">
     <el-tabs v-model="activeName">
-      <el-tab-pane label="daily"
+      <el-tab-pane label="total"
                    name="first">
         <dailyMsg></dailyMsg>
       </el-tab-pane>
-      <el-tab-pane label="total"
+      <el-tab-pane label="daily"
                    name="second">
         <totalMsg></totalMsg>
       </el-tab-pane>

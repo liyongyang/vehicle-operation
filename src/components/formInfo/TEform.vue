@@ -21,16 +21,23 @@
               border
               stripe
               style="width: 100%;text-align: center;">
-      <el-table-column label="time"
-                       width="160">
+      <el-table-column label="start_time"
+                       width="200">
         <template slot-scope="scope">
-          <i class="el-icon-time"></i>
-          <span>{{ scope.row.time }}</span>
+          <p v-show="scope.row.es_start"><span style="color:blue;font-weight: bold">ES: </span>{{ scope.row.es_start }}</p>
+          <p v-show="scope.row.takeover_start"><span style="color:red;font-weight: bold">TO: </span>{{ scope.row.takeover_start }}</p>
+        </template>
+      </el-table-column>
+      <el-table-column label="duration"
+                       width="200">
+        <template slot-scope="scope">
+          <p v-show="scope.row.es_start"><span style="color:blue;font-weight: bold">ES: </span>{{ Math.round(scope.row.es_time) }}秒</p>
+          <p v-show="scope.row.takeover_start"><span style="color:red;font-weight: bold">TO: </span>{{ Math.round(scope.row.takeover_time) }}秒</p>
         </template>
       </el-table-column>
       <el-table-column label="type"
                        prop="type"
-                       width="120">
+                       width="200">
         <template slot-scope="scope">
           <el-tag type="warning"
                   effect="dark">{{activeName}}</el-tag>
@@ -38,17 +45,17 @@
       </el-table-column>
       <el-table-column label="vehicle_id"
                        prop="vehicle_id"
-                       width="160"
+                       width="180"
                        column-key="vehicle_id"
                        :filters="vehicle"
-                       :filter-method="filterHandler">
+                       :filter-method="vehicleHandler">
         <template slot-scope="scope">
           <el-tag type="success"
                   effect="dark">{{scope.row.vehicle_id }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="park"
-                       width="200">
+                       width="240">
         <template slot-scope="scope">
           <el-popover trigger="hover"
                       placement="top">
@@ -62,44 +69,40 @@
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column label="单次接管时间"
-                       width="240">
-        <template slot-scope="scope">
-          <span>loading</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="单次接管距离"
-                       width="240">
-        <template slot-scope="scope">
-          <span>{{scope.row.es_distance}}</span>
-        </template>
-      </el-table-column>
       <el-table-column prop="tag"
-                       label="标签"
-                       width="160">
+                       label="tag"
+                       width="360">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.cause_type === '红绿灯' ? 'primary' : 'success'"
+          <el-tag v-if="scope.row.cause_type !== null"
+                  type="success"
                   disable-transitions>{{scope.row.cause_type}}</el-tag>
+          <div v-else
+               id="typeChoose">
+            <el-cascader :options="cause_type"
+                         :props="{ expandTrigger: 'hover' }"
+                         @change="causeType">
+            </el-cascader>
+          </div>
         </template>
       </el-table-column>
 
-      <el-table-column label="接管描述"
-                       width="280">
+      <el-table-column label="comment"
+                       width="360">
         <template slot-scope="scope">
           <el-input v-model="scope.row.cause_desc"
                     placeholder="原因描述"></el-input>
         </template>
       </el-table-column>
-      <el-table-column label="操作"
-                       width="180">
+      <el-table-column label="Options"
+                       width="260">
         <template slot-scope="scope">
           <el-button size="mini"
                      :plain="true"
                      type="success"
-                     @click="handleEdit(scope.$index, scope.row,)">提交</el-button>
+                     @click="handleSubmit(scope.$index, scope.row,)">submit</el-button>
           <el-button size="mini"
                      type="danger"
-                     @click="handleDelete(scope.$index, scope.row)">忽略</el-button>
+                     @click="handleDelete(scope.$index, scope.row)">ignore</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -128,7 +131,9 @@ export default {
       pageSize: 10, // 默认每页显示10条
       totalNum: '', // 总页数
       arr: [],
-      vehicle: []
+      vehicle: [],
+      cause_type: [],
+      index_cause_type: ''
     }
   },
   // 监听
@@ -141,6 +146,9 @@ export default {
     },
     activeName (value) {
       this.getData(value)
+    },
+    index_cause_type (e) {
+      return this.index_cause_type
     }
   },
 
@@ -157,8 +165,9 @@ export default {
           }
         )
         .then(function (data) {
-          // console.log(data)
-          that.formData = data.datas[0].result
+          console.log(data.datas)
+          that.formData = data.datas.real.result
+          that.cause_type = data.datas.cause_type
           that.$nextTick(function () {
             for (let i = 0; i < that.formData.length; i++) {
               this.arr[i] = that.formData[i].vehicle_id
@@ -196,11 +205,16 @@ export default {
       this.openFullScreen(800)
       this.currentPage = cpage
     },
-    filterHandler (value, row, column) {
+    vehicleHandler (value, row, column) {
       const property = column['property']
       return row[property] === value
     },
-    handleEdit (index, row) {
+    causeType (value) {
+      // console.log(value[1])
+      this.index_cause_type = value[1]
+      console.log(this.index_cause_type)
+    },
+    handleSubmit (index, row) {
       let that = this
       const h = this.$createElement
       this.$msgbox({
@@ -217,15 +231,17 @@ export default {
             instance.confirmButtonLoading = true
             instance.confirmButtonText = '执行中...'
             setTimeout(() => {
+              console.log(that.index_cause_type)
               that.axios
                 .post(
                   '/api/vehicle/handle',
-                  { 'id': row.id, 'cause_desc': row.cause_desc },
+                  { 'id': row.id, 'cause_type': that.index_cause_type, 'cause_desc': row.cause_desc },
                   {
                     useLoading: true
                   }
                 )
                 .then(function (data) {
+                  console.log(data)
                 })
                 .catch(function (err) {
                   that.$message({

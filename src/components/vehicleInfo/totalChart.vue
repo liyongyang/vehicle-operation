@@ -60,7 +60,7 @@ export default {
         tooltip: {
           trigger: 'axis',
           axisPointer: {// 坐标轴指示器，坐标轴触发有效
-            type: 'shadow'// 默认为直线，可选为：'line' | 'shadow'
+            type: 'line'// 默认为直线，可选为：'line' | 'shadow'
           }
         },
         /* 图例说明 */
@@ -102,7 +102,7 @@ export default {
           {
 
             name: '运营时间',
-            type: 'bar',
+            type: 'line',
             fontSize: 28,
             borderWidth: 1,
             color: '#3300CC',
@@ -115,7 +115,7 @@ export default {
           },
           {
             name: '运营里程',
-            type: 'bar',
+            type: 'line',
             borderWidth: 1,
             color: '#009966',
             data: this.total_running_length,
@@ -127,22 +127,32 @@ export default {
           },
           {
             name: '接管次数',
-            type: 'bar',
+            type: 'line',
             fontSize: 28,
             borderWidth: 1,
             color: '#FF6666',
-            data: this.total_take_over_counts
+            data: this.total_take_over_counts,
+            markLine: {
+              data: [
+                { type: 'average', name: '平均值' }
+              ]
+            }
           },
           {
             name: '急停次数',
-            type: 'bar',
+            type: 'line',
             borderWidth: 1,
             color: '#FF00FF',
-            data: this.total_emergency_stop_counts
+            data: this.total_emergency_stop_counts,
+            markLine: {
+              data: [
+                { type: 'average', name: '平均值' }
+              ]
+            }
           },
           {
             name: '接管时间',
-            type: 'bar',
+            type: 'line',
             fontSize: 28,
             borderWidth: 1,
             color: '#CC6600',
@@ -150,7 +160,7 @@ export default {
           },
           {
             name: '急停时间',
-            type: 'bar',
+            type: 'line',
             borderWidth: 1,
             color: '#6600CC',
             data: this.total_emergency_stop_duration
@@ -169,15 +179,15 @@ export default {
       for (let i = 0; i < res.length; i++) {
         this.$nextTick(function () {
           this.dayData[i] = res[i].day
-          this.total_running_time[i] = res[i].total_running_time
-          this.total_running_length[i] = res[i].total_running_length
-          this.total_jira_commit_counts[i] = res[i].total_jira_commit_counts
-          this.total_take_over_counts[i] = res[i].total_take_over_counts
-          this.total_emergency_stop_counts[i] = res[i].total_emergency_stop_counts
-          this.total_take_over_duration[i] = res[i].total_take_over_duration
-          this.total_emergency_stop_duration[i] = res[i].total_emergency_stop_duration
-          this.total_fault_counts[i] = res[i].total_fault_counts
-          this.total_accident_counts[i] = res[i].total_accident_counts
+          this.total_running_time[i] = res[i].run_time
+          this.total_running_length[i] = res[i].run_mileage
+          this.total_jira_commit_counts[i] = res[i].jira
+          this.total_take_over_counts[i] = res[i].takeover
+          this.total_emergency_stop_counts[i] = res[i].E_stop
+          this.total_take_over_duration[i] = res[i].takeover_time
+          this.total_emergency_stop_duration[i] = res[i].ES_time
+          this.total_fault_counts[i] = res[i].fault_counts
+          this.total_accident_counts[i] = res[i].accident_counts
         })
       }
       // console.log(this.total_running_length)

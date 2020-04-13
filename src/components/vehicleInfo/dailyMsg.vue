@@ -92,7 +92,7 @@ export default {
       that.openFullScreen(500)
       that.axios
         .post(
-          '/api/vehicle/daily',
+          '/api/vehicle/totaldata',
           {
             'vehicle_id': that.vehicle_id
           },
@@ -101,9 +101,9 @@ export default {
           }
         )
         .then(function (data) {
-          // that.dailyData = data.datas[0]
-          bus.$emit('dailyData', data.datas[0])
-          // console.log(that.dailyData)
+          console.log(data)
+          that.dailyData = data.datas
+          bus.$emit('dailyData', that.dailyData)
         })
         .catch(function (err) {
           that.$message({

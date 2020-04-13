@@ -122,13 +122,14 @@ export default {
       that.vehicle_id = that.totalInfo[1].value
       that.axios
         .post(
-          '/api/vehicle/total',
+          '/api/vehicle/dailydata',
           { 'vehicle_id': that.vehicle_id, 'park_id': that.park_id, 'interval': that.activeName },
           {
             useLoading: true
           }
         )
         .then(function (data) {
+          console.log(data)
           bus.$emit('allData', data.datas)
         })
         .catch(function (err) {
