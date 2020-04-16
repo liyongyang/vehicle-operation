@@ -1,20 +1,9 @@
 <template>
   <div class='apage'>
-    <div id="myChart1"
-         style="width: 1200px;height: 1000px;">
-    </div>
-    <div class="row col-xs-12 col-md-6 col-lg-6 col-xl-3"
-         v-for="(item, key) in dailyData"
-         :index="item.id"
-         :key="item.id">
-      <div class="card-box bg-success">
-        <h4 class="text-white text m-b-20"
-            v-text="key"></h4>
-        <h3 class="text-white"
-            v-text="item">
-        </h3>
-      </div>
-    </div>
+    <!-- <div id="myChart1"
+         style="width: 1200px;height: 1000px;" >
+    </div> -->
+    <h2>apage</h2>
   </div>
 </template>
 
@@ -33,34 +22,6 @@ export default {
   watch: {},
   // 方法
   methods: {
-    getData () {
-      let that = this
-      // that.openFullScreen(500)
-      that.axios
-        .post(
-          '/api/vehicle/totaldata',
-          {
-            'vehicle_id': 'arts16_1'
-          },
-          {
-            useLoading: true
-          }
-        )
-        .then(function (data) {
-          console.log(data)
-          // for (let i = 0; i < 4; i++) {
-          //   that.dailyData.push(data.datas)
-          // }
-          // that.dailyData = data.datas[0]
-          // console.log(that.dailyData)
-        })
-        .catch(function (err) {
-          that.$message({
-            message: err,
-            type: 'error'
-          })
-        })
-    },
     drawPie1 (id) {
       var item1 = {
         color: '#F54F4A'
@@ -284,7 +245,6 @@ export default {
   },
   // 生命周期 - 挂载完成（可以访问DOM元素）
   mounted () {
-    this.getData()
     this.$nextTick(function () {
       this.drawPie1('myChart1')
     })

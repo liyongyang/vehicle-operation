@@ -74,7 +74,8 @@
                        width="360">
         <template slot-scope="scope">
           <el-tag v-if="scope.row.cause_type !== null"
-                  type="success"
+                  type="info"
+                  effect="dark"
                   disable-transitions>{{scope.row.cause_type}}</el-tag>
           <div v-else
                id="typeChoose">
@@ -216,13 +217,15 @@ export default {
     },
     handleSubmit (index, row) {
       let that = this
-      const h = this.$createElement
+      const h1 = this.$createElement
       this.$msgbox({
         title: '消息',
-        message: h('p', null, [
-          h('span', null, '你的接管描述：'),
-          h('i', { style: 'color: teal' }, row.cause_desc)
-        ]),
+        message: h1('p', null,
+          [
+            h1('span', null, '你的接管描述：'),
+            h1('i', { style: 'color: teal' }, row.cause_desc)
+          ]
+        ),
         showCancelButton: true,
         confirmButtonText: '确定',
         cancelButtonText: '取消',

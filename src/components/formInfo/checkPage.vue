@@ -20,7 +20,7 @@
                             v-text="vehicle_item"></el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <checkForm></checkForm>
+    <checkForm :vehicle_id='this.vehicle_id'></checkForm>
   </div>
 </template>
 
@@ -94,6 +94,7 @@ export default {
     getVehicle_id () {
       let that = this
       console.log(that.vehicle_id)
+      // that.$emit('vehicle_id', that.vehicle_id)
       that.openFullScreen(500)
       that.axios
         .post(
