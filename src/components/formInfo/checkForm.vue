@@ -68,7 +68,7 @@
                     v-text="item.description"></span>
               <el-select v-model="item.status"
                          placeholder="检查">
-                <el-option label="OK"
+                <el-option label="正常"
                            value="0"></el-option>
                 <el-option label="有问题"
                            value="1"></el-option>
@@ -112,133 +112,133 @@ export default {
         vehicleId: '',
         day: '',
         operator: '',
-        block: '',
+        block: '0',
         info: []
       },
-      StaticTopic: [
+      staticform: [
         {
           'name': '车轮&车胎',
-          'point': '车轮螺栓是否松动，轮胎是否破损缺气',
-          'status': 'OK',
+          'description': '车轮螺栓是否松动，轮胎是否破损缺气',
+          'status': '0',
           'comment': ''
         },
         {
           'name': '车身外观',
-          'point': '车门铰链门锁是否正常，车身外观是否影响产品形象',
-          'status': 'OK',
+          'description': '车门铰链门锁是否正常，车身外观是否影响产品形象',
+          'status': '0',
           'comment': ''
         },
         {
           'name': '车内环境',
-          'point': '是否有漏水，灰尘等问题',
-          'status': 'OK',
+          'description': '是否有漏水，灰尘等问题',
+          'status': '0',
           'comment': ''
         },
         {
           'name': '方向盘位置',
-          'point': '方向盘、车轮位置是否零位',
-          'status': 'OK',
+          'description': '方向盘、车轮位置是否零位',
+          'status': '0',
           'comment': ''
         },
         {
           'name': '灯光系统',
-          'point': '照明灯，转向灯，制动灯是否正常',
-          'status': 'OK',
+          'description': '照明灯，转向灯，制动灯是否正常',
+          'status': '0',
           'comment': ''
         },
 
         {
           'name': '车辆电压',
-          'point': '车辆电压是否充足',
-          'status': 'OK',
+          'description': '车辆电压是否充足',
+          'status': '0',
           'comment': ''
         },
         {
           'name': '扫刷系统',
-          'point': '扫刷是否存在机械故障，刷毛长度是否不足',
-          'status': 'OK',
+          'description': '扫刷是否存在机械故障，刷毛长度是否不足',
+          'status': '0',
           'comment': ''
         },
 
         {
           'name': '喷水系统',
-          'point': '水箱水量是否充足，喷头是否堵住',
-          'status': 'OK',
+          'description': '水箱水量是否充足，喷头是否堵住',
+          'status': '0',
           'comment': ''
         },
 
         {
           'name': '雷达相机',
-          'point': '雷达相机是否有遮挡破损或明显异常',
-          'status': 'OK',
+          'description': '雷达相机是否有遮挡破损或明显异常',
+          'status': '0',
           'comment': ''
         }
       ],
-      dynamicTopic: [
+      dynamicform: [
         {
           'name': '转向报文',
-          'point': '在车辆上电后及自动驾驶前，将方向盘以90度的幅度来回转动三次，检查角度传感器是否激活',
-          'status': 'OK',
+          'description': '在车辆上电后及自动驾驶前，将方向盘以90度的幅度来回转动三次，检查角度传感器是否激活',
+          'status': '0',
           'comment': ''
         },
         {
           'name': '转向系统报文检查',
-          'point': '检查转向系统报文1E5反馈是否正常（报文第2、3位非FF为正常）candump can1 | grep 1E5 can1 | grep 1E5',
-          'status': 'OK',
+          'description': '检查转向系统报文1E5反馈是否正常（报文第2、3位非FF为正常）candump can1 | grep 1E5 can1 | grep 1E5',
+          'status': '0',
           'comment': ''
         },
         {
           'name': '线控转向',
-          'point': '车辆上电后及自动驾驶前，将方向盘以90度的幅度来回转动三次，检查在Brake and shake状态下是否接受线控',
-          'status': 'OK',
+          'description': '车辆上电后及自动驾驶前，将方向盘以90度的幅度来回转动三次，检查在Brake and shake状态下是否接受线控',
+          'status': '0',
           'comment': ''
         },
         {
           'name': '制动报文',
-          'point': '检查制动系统报文是否正常（针对配置IBS系统的车辆）candump can1 | grep 219 看是否有数据 can1 | grep 219 看有没有数据',
-          'status': 'OK',
+          'description': '检查制动系统报文是否正常（针对配置IBS系统的车辆）candump can1 | grep 219 看是否有数据 can1 | grep 219 看有没有数据',
+          'status': '0',
           'comment': ''
         },
         {
           'name': '基础制动',
-          'point': '人工踩踏制动踏板时是否工作正常，无明显卡涩现象',
-          'status': 'OK',
+          'description': '人工踩踏制动踏板时是否工作正常，无明显卡涩现象',
+          'status': '0',
           'comment': ''
         },
         {
           'name': '线控制动',
-          'point': '检查在brake_and_shake状态下制动系统是否接受线控',
-          'status': 'OK',
+          'description': '检查在brake_and_shake状态下制动系统是否接受线控',
+          'status': '0',
           'comment': ''
         },
         {
           'name': '手刹系统',
-          'point': '检查手刹是否正常工作，电机是否能正常执行手刹动作',
-          'status': 'OK',
+          'description': '检查手刹是否正常工作，电机是否能正常执行手刹动作',
+          'status': '0',
           'comment': ''
         },
         {
           'name': '异响问题',
-          'point': '车辆行驶转向是否有明显异响',
-          'status': 'OK',
+          'description': '车辆行驶转向是否有明显异响',
+          'status': '0',
           'comment': ''
         },
         {
           'name': '急停开关',
-          'point': '自动驾驶模式下急停开关是否有效',
-          'status': 'OK',
+          'description': '自动驾驶模式下急停开关是否有效',
+          'status': '0',
           'comment': ''
         },
         {
           'name': '转向异响检查',
-          'point': '检查转向过程中，转向系统是否存在明显异响',
-          'status': 'OK',
+          'description': '检查转向过程中，转向系统是否存在明显异响',
+          'status': '0',
           'comment': ''
         }
       ],
-      block: 0,
-      staticform: [],
-      dynamicform: []
+      block: 0
+      // staticform: [],
+      // dynamicform: []
     }
   },
   // 监听
@@ -248,38 +248,54 @@ export default {
     vehicle_id () {
       this.form.vehicleId = this.vehicle_id
     },
+    form () {
+      return this.form
+    },
     staticform () {
-      return this.staticform
+      return this.form.info.push(this.staticform)
+      // this.form.info.push(this.staticform)
     },
     dynamicform () {
-      return this.dynamicform
+      // return this.dynamicform
+      this.form.info.push(this.dynamicform)
     }
   },
   // 方法
   methods: {
-    getLIst () {
-      let that = this
-      this.axios
-        .get(
-          '/api/inspection-form/menu-list',
-          {},
-          {
-            useLoading: true
-          }
-        )
-        .then(function (data) {
-          that.staticform = data.datas.static
-          that.dynamicform = data.datas.dynamic
-          console.log(that.staticform)
-        })
-        .catch(function (err) {
-          that.$message({
-            message: err,
-            type: 'error'
-          })
-        })
-    },
+    // getLIst () {
+    //   let that = this
+    //   this.axios
+    //     .get(
+    //       '/api/inspection-form/menu-list',
+    //       {},
+    //       {
+    //         useLoading: true
+    //       }
+    //     )
+    //     .then(function (data) {
+    //       that.staticform = data.datas.static
+    //       that.dynamicform = data.datas.dynamic
+    //       console.log(that.staticform)
+    //     })
+    //     .catch(function (err) {
+    //       that.$message({
+    //         message: err,
+    //         type: 'error'
+    //       })
+    //     })
+    // },
     onSubmit () {
+      // this.form.info.push(this.staticform)
+      for (let i = 0; i < this.staticform.length; i++) {
+        if (this.staticform[i].status == 1) {
+          this.form.info.push(this.staticform[i])
+        }
+      }
+      for (let i = 0; i < this.dynamicform.length; i++) {
+        if (this.dynamicform[i].status == 1) {
+          this.form.info.push(this.dynamicform[i])
+        }
+      }
       console.log(this.form)
     }
   },

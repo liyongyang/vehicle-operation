@@ -8,6 +8,14 @@
                      :props="{ expandTrigger: 'hover' }"
                      @change="getData"></el-cascader>
       </div>
+      <!-- <div class="block">
+        <i class="el-icon-location-information"></i>
+        <el-cascader v-model="totalInfo"
+                     :options="options"
+                     :props="{ expandTrigger: 'hover',value:'value', label: 'value',
+        children: 'children' }"
+                     @change="getData"></el-cascader>
+      </div> -->
       <el-breadcrumb separator="/"
                      class="bread-crumb">
         <el-breadcrumb-item :to="{ path: '/' }"> Home </el-breadcrumb-item>
@@ -53,7 +61,12 @@ export default {
       park_id: '',
       vehicle_id: '',
       len: [],
-      options: []
+      options: [],
+      optionProps: {
+        value: 'park_id',
+        label: 'value',
+        children: 'children'
+      }
     }
   },
   // 监听
@@ -90,9 +103,11 @@ export default {
           }
         )
         .then(function (data) {
+          // console.log(data)
+          // that.options = data.datas
           for (let i = 0; i < data.datas.length; i++) {
             that.len[i] = data.datas[i].children.length
-            for (let j = 0; j < that.len[i]; i++) {
+            for (let j = 0; j < that.len[i]; j++) {
               that.options.push(
                 {
                   value: data.datas[i].park_id,
@@ -107,7 +122,7 @@ export default {
               )
             }
           }
-          // console.log(that.options)
+          console.log(that.options)
         })
         .catch(function (err) {
           that.$message({
@@ -118,6 +133,7 @@ export default {
     },
     getData () {
       let that = this
+      console.log(that.totalInfo)
       that.park_id = that.totalInfo[0]
       that.vehicle_id = that.totalInfo[1].value
       that.axios

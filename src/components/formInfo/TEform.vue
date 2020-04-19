@@ -160,7 +160,7 @@ export default {
       that.axios
         .post(
           '/api/vehicle/etform-obtain',
-          { 'type': that.activeName, 'pageNum': 1, 'pageSize': 50 },
+          { 'type': that.activeName, 'pageNum': 1, 'pageSize': 200 },
           {
             useLoading: true
           }
