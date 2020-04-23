@@ -1,21 +1,21 @@
 <template>
   <div class="total">
     <div class="total-option">
-      <div class="block">
+      <!-- <div class="block">
         <i class="el-icon-location-information"></i>
         <el-cascader v-model="totalInfo"
                      :options="options"
                      :props="{ expandTrigger: 'hover' }"
                      @change="getData"></el-cascader>
-      </div>
-      <!-- <div class="block">
+      </div> -->
+      <div class="block">
         <i class="el-icon-location-information"></i>
         <el-cascader v-model="totalInfo"
                      :options="options"
                      :props="{ expandTrigger: 'hover',value:'value', label: 'value',
         children: 'children' }"
                      @change="getData"></el-cascader>
-      </div> -->
+      </div>
       <el-breadcrumb separator="/"
                      class="bread-crumb">
         <el-breadcrumb-item :to="{ path: '/' }"> Home </el-breadcrumb-item>
@@ -103,26 +103,9 @@ export default {
           }
         )
         .then(function (data) {
-          console.log(data)
-          // that.options = data.datas
-          for (let i = 0; i < data.datas.length; i++) {
-            that.len[i] = data.datas[i].children.length
-            for (let j = 0; j < that.len[i]; j++) {
-              that.options.push(
-                {
-                  value: data.datas[i].park_id,
-                  label: data.datas[i].park_id,
-                  children: [
-                    {
-                      value: data.datas[i].children[j],
-                      label: data.datas[i].children[j].value
-                    }
-                  ]
-                }
-              )
-            }
-          }
-          console.log(that.options)
+          // console.log(data)
+          that.options = data.datas
+          // console.log(that.options[0])
         })
         .catch(function (err) {
           that.$message({
@@ -133,9 +116,9 @@ export default {
     },
     getData () {
       let that = this
-      console.log(that.totalInfo)
+      // console.log(that.totalInfo[1])
       that.park_id = that.totalInfo[0]
-      that.vehicle_id = that.totalInfo[1].value
+      that.vehicle_id = that.totalInfo[1]
       that.axios
         .post(
           '/api/vehicle/dailydata',
@@ -145,7 +128,7 @@ export default {
           }
         )
         .then(function (data) {
-          console.log(data)
+          // console.log(data)
           bus.$emit('allData', data.datas)
         })
         .catch(function (err) {
@@ -161,7 +144,7 @@ export default {
   // 生命周期 - 挂载完成（可以访问DOM元素）
   mounted () {
     this.getLIst()
-    this.getData()
+    // this.getData()
   }
 }
 </script>

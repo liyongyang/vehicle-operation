@@ -166,7 +166,7 @@ export default {
           }
         )
         .then(function (data) {
-          console.log(data.datas)
+          // console.log(data.datas)
           that.formData = data.datas.real.result
           that.cause_type = data.datas.cause_type
           that.$nextTick(function () {

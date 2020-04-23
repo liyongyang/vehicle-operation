@@ -1,7 +1,7 @@
 <template>
   <div class="echarts">
     <div id="myChart1"
-         style="width: 2100px;height: 800px;"></div>
+         style="width: 2000px;height: 800px;"></div>
   </div>
 </template>
 <script>
