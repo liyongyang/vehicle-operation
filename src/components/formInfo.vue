@@ -22,7 +22,7 @@ export default {
   },
   data () {
     return {
-      activeName: 'checkData',
+      activeName: 'E_stop',
       formData: [[]]
     }
   },

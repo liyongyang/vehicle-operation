@@ -4,8 +4,7 @@
       <div class="nav-search">
         <i class="el-icon-location-information"></i>
         <el-select v-model="vehicle_id"
-                   placeholder="请选择车辆"
-                   @change="getVehicle_id()">
+                   placeholder="请选择车辆">
           <el-option v-for="item in options"
                      :key="item.index"
                      :label="item.label"
@@ -90,34 +89,6 @@ export default {
     },
     handleSelect (key, keyPath) {
       console.log(key, keyPath)
-    },
-    getVehicle_id () {
-      let that = this
-      console.log(that.vehicle_id)
-      // that.$emit('vehicle_id', that.vehicle_id)
-      that.openFullScreen(500)
-      that.axios
-        .post(
-          '/api/vehicle/checkform',
-          {
-            'vehicle_id': that.vehicle_id
-          },
-          {
-            useLoading: true
-          }
-        )
-        .then(function (data) {
-          // console.log(data)
-          let dailyData = data.datas[0]
-          that.$emit('change-vehicle', dailyData)
-          that.dailyData = data.daily[0]
-        })
-        .catch(function (err) {
-          that.$message({
-            message: err,
-            type: 'error'
-          })
-        })
     }
   },
   // 生命周期 - 创建完成（可以访问当前this实例）

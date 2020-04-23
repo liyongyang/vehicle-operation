@@ -2,22 +2,29 @@
   <div class='check-form'>
     <el-form ref="form"
              :model="form"
+             :rules="rules"
              label-width="180px">
       <el-row>
         <el-col :span="12">
-          <el-form-item label="填表人">
+          <el-form-item label="填表人"
+                        prop="operator">
             <el-col :span="12">
               <el-input v-model="form.operator"></el-input>
             </el-col>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="出车日期">
-            <el-col :span="12">
-              <el-date-picker type="date"
-                              placeholder="选择日期"
-                              v-model="form.day"
-                              style="width: 100%;"></el-date-picker>
+          <el-form-item label="出车日期"
+                        required>
+            <el-col :span="11">
+              <el-form-item prop="day">
+                <el-date-picker type="date"
+                                placeholder="选择日期"
+                                v-model="form.day"
+                                format="yyyy.MM.dd"
+                                value-format="yyyy.MM.dd"
+                                style="width: 100%;"></el-date-picker>
+              </el-form-item>
             </el-col>
           </el-form-item>
         </el-col>
@@ -92,10 +99,9 @@
       <el-col style="text-align: center">
         <el-button type="success"
                    round
-                   @click="onSubmit()">SUBMIT</el-button>
+                   @click="onSubmit('form')">SUBMIT</el-button>
       </el-col>
     </el-form>
-    <div v-text="this.vehicle_id"></div>
   </div>
 </template>
 
@@ -111,6 +117,7 @@ export default {
       form: {
         vehicleId: '',
         day: '',
+        date2: '',
         operator: '',
         block: '0',
         info: []
@@ -236,9 +243,17 @@ export default {
           'comment': ''
         }
       ],
-      block: 0
+      block: 0,
       // staticform: [],
       // dynamicform: []
+      rules: {
+        operator: [
+          { required: true, message: '请输入填表人姓名', trigger: 'blur' }
+        ],
+        day: [
+          { type: 'string', required: true, message: '请选择日期', trigger: 'change' }
+        ]
+      }
     }
   },
   // 监听
@@ -250,53 +265,102 @@ export default {
     },
     form () {
       return this.form
-    },
-    staticform () {
-      return this.form.info.push(this.staticform)
-      // this.form.info.push(this.staticform)
-    },
-    dynamicform () {
-      // return this.dynamicform
-      this.form.info.push(this.dynamicform)
     }
+    // staticform () {
+    //   // return this.form.info.push(this.staticform)
+    //   // this.form.info.push(this.staticform)
+    // },
+    // dynamicform () {
+    //   // return this.dynamicform
+    //   // this.form.info.push(this.dynamicform)
+    // }
   },
   // 方法
   methods: {
-    // getLIst () {
-    //   let that = this
-    //   this.axios
-    //     .get(
-    //       '/api/inspection-form/menu-list',
-    //       {},
-    //       {
-    //         useLoading: true
-    //       }
-    //     )
-    //     .then(function (data) {
-    //       that.staticform = data.datas.static
-    //       that.dynamicform = data.datas.dynamic
-    //       console.log(that.staticform)
-    //     })
-    //     .catch(function (err) {
-    //       that.$message({
-    //         message: err,
-    //         type: 'error'
-    //       })
-    //     })
-    // },
-    onSubmit () {
+    onSubmit (formName) {
+      let that = this
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          console.log(that.staticform)
+          this.form.info.push(this.staticform)
+          // for (let i = 0; i < that.staticform.length; i++) {
+          //   if (that.staticform[i].status === 1) {
+          //     that.form.info.push(that.staticform[i])
+          //   }
+          // }
+          // for (let i = 0; i < that.dynamicform.length; i++) {
+          //   if (that.dynamicform[i].status === 1) {
+          //     that.form.info.push(that.dynamicform[i])
+          //   }
+          // }
+          console.log(that.form)
+          that.axios
+            .post(
+              '/api/inspection-form/day12',
+              {
+                'vehicleId': that.form.vehicleId,
+                'day': that.form.day,
+                'operator': that.form.operator,
+                'block': that.form.block,
+                'info': that.form.info
+              },
+              {
+                useLoading: true
+              }
+            )
+            .then(function (data) {
+              console.log(data)
+            })
+            .catch(function (err) {
+              that.$message({
+                message: err,
+                type: 'error'
+              })
+            })
+        } else {
+          that.$message.error('错了哦，这是一条错误消息')
+          return false
+        }
+      })
       // this.form.info.push(this.staticform)
-      for (let i = 0; i < this.staticform.length; i++) {
-        if (this.staticform[i].status == 1) {
-          this.form.info.push(this.staticform[i])
-        }
-      }
-      for (let i = 0; i < this.dynamicform.length; i++) {
-        if (this.dynamicform[i].status == 1) {
-          this.form.info.push(this.dynamicform[i])
-        }
-      }
-      console.log(this.form)
+      // for (let i = 0; i < that.staticform.length; i++) {
+      //   if (that.staticform[i].status === 1) {
+      //     that.form.info.push(that.staticform[i])
+      //   }
+      // }
+      // for (let i = 0; i < that.dynamicform.length; i++) {
+      //   if (that.dynamicform[i].status === 1) {
+      //     that.form.info.push(that.dynamicform[i])
+      //   }
+      // }
+      // if (that.form.vehicleId && that.form.operator) {
+      //   console.log(that.form)
+      //   that.axios
+      //     .post(
+      //       '/api/inspection-form/day',
+      //       {
+      //         'vehicleId': that.form.vehicleId,
+      //         'day': that.form.day,
+      //         'operator': that.form.operator,
+      //         'block': that.form.block,
+      //         'info': that.form.info
+      //       },
+      //       {
+      //         useLoading: true
+      //       }
+      //     )
+      //     .then(function (data) {
+      //       console.log(data)
+      //     })
+      //     .catch(function (err) {
+      //       that.$message({
+      //         message: err,
+      //         type: 'error'
+      //       })
+      //     })
+      // } else {
+      //   that.$message.error('错了哦，这是一条错误消息')
+      // }
     }
   },
   // 生命周期 - 创建完成（可以访问当前this实例）
@@ -305,7 +369,7 @@ export default {
   },
   // 生命周期 - 挂载完成（可以访问DOM元素）
   mounted () {
-    this.getLIst()
+    // this.getLIst()
   }
 }
 </script>

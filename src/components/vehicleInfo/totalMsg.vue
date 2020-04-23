@@ -103,7 +103,7 @@ export default {
           }
         )
         .then(function (data) {
-          // console.log(data)
+          console.log(data)
           // that.options = data.datas
           for (let i = 0; i < data.datas.length; i++) {
             that.len[i] = data.datas[i].children.length
