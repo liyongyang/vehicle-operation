@@ -11,6 +11,25 @@
                    name="eandt">
       </el-tab-pane>
     </el-tabs>
+    <el-select class="change-vehicle"
+               v-model="vehicle_id"
+               placeholder="请选择筛选车辆"
+               size="small"
+               @change="getData">
+      <el-option v-for="item in vehicle"
+                 :key="item.index"
+                 :label="item.label"
+                 :value="item">
+      </el-option>
+    </el-select>
+    <el-pagination @size-change="handleSizeChange"
+                   @current-change="handleCurrentChange"
+                   :current-page="currentPage"
+                   :page-sizes="[5,10,14]"
+                   :page-size="pageSize"
+                   layout="total, sizes, prev, pager, next, jumper"
+                   :total="formData.length">
+    </el-pagination>
     <el-table ref="filterTable"
               v-loading="loading"
               element-loading-text="拼命加载中"
@@ -18,6 +37,7 @@
               element-loading-background="rgba(0, 0, 0, 0.8)"
               :data="formData
               .slice((currentPage-1)*pageSize,currentPage*pageSize)"
+              :filter-change="filterTagTable"
               border
               stripe
               style="width: 100%;text-align: center;">
@@ -45,10 +65,7 @@
       </el-table-column>
       <el-table-column label="vehicle_id"
                        prop="vehicle_id"
-                       width="180"
-                       column-key="vehicle_id"
-                       :filters="vehicle"
-                       :filter-method="vehicleHandler">
+                       width="180">
         <template slot-scope="scope">
           <el-tag type="success"
                   effect="dark">{{scope.row.vehicle_id }}</el-tag>
@@ -86,7 +103,6 @@
           </div>
         </template>
       </el-table-column>
-
       <el-table-column label="comment"
                        width="360">
         <template slot-scope="scope">
@@ -107,16 +123,6 @@
         </template>
       </el-table-column>
     </el-table>
-    <div class="change-page">
-      <el-pagination @size-change="handleSizeChange"
-                     @current-change="handleCurrentChange"
-                     :current-page="currentPage"
-                     :page-sizes="[5,10,14]"
-                     :page-size="pageSize"
-                     layout="total, sizes, prev, pager, next, jumper"
-                     :total="formData.length">
-      </el-pagination>
-    </div>
   </div>
 </template>
 
@@ -127,9 +133,11 @@ export default {
       loading: '',
       activeName: 'e_stop',
       formData: [],
+      formtData: [],
+      vehicle_id: '',
       tableData: [], // 数据
       currentPage: 1, // 默认显示第一页
-      pageSize: 10, // 默认每页显示10条
+      pageSize: 14, // 默认每页显示10条
       totalNum: '', // 总页数
       arr: [],
       vehicle: [],
@@ -150,37 +158,32 @@ export default {
     },
     index_cause_type (e) {
       return this.index_cause_type
+    },
+    formData () {
+      return this.formData
     }
   },
 
   // 方法
   methods: {
-    getData (type) {
+    getLIst () {
       let that = this
-      that.axios
-        .post(
-          '/api/vehicle/etform-obtain',
-          { 'type': that.activeName, 'pageNum': 1, 'pageSize': 200 },
+      this.axios
+        .get(
+          '/api/vehicle/draw-list',
+          {},
           {
             useLoading: true
           }
         )
         .then(function (data) {
-          // console.log(data.datas)
-          that.formData = data.datas.real.result
-          that.cause_type = data.datas.cause_type
-          that.$nextTick(function () {
-            for (let i = 0; i < that.formData.length; i++) {
-              this.arr[i] = that.formData[i].vehicle_id
+          for (let i = 0; i < data.datas.length; i++) {
+            for (let j = 0; j < data.datas[i].children.length; j++) {
+              that.arr.push(data.datas[i].children[j].value)
             }
-            this.$nextTick(function () {
-              let vehicle2 = Array.from(new Set(this.arr))
-              for (let j = 0; j < vehicle2.length; j++) {
-                this.vehicle.push({ text: vehicle2[j], value: vehicle2[j] })
-              }
-            })
-            this.vehicle = []
-          })
+          }
+          let vehicleArr = Array.from(new Set(that.arr))
+          that.vehicle = vehicleArr
         })
         .catch(function (err) {
           that.$message({
@@ -188,6 +191,29 @@ export default {
             type: 'error'
           })
         })
+    },
+    getData (type) {
+      let that = this
+      that.axios
+        .post(
+          '/api/vehicle/etform-obtain',
+          { 'type': that.activeName, 'vehicle_id': that.vehicle_id, 'pageNum': 1, 'pageSize': 100 },
+          {
+            useLoading: true
+          }
+        )
+        .then(function (data) {
+          that.formData = data.datas.real.result
+          // console.log(that.formData)
+          that.cause_type = data.datas.cause_type
+        })
+        .catch(function (err) {
+          that.$message({
+            message: err,
+            type: 'error'
+          })
+        })
+      this.handleCurrentChange(1)
     },
     openFullScreen (time) {
       const loading = this.$loading({
@@ -206,14 +232,17 @@ export default {
       this.openFullScreen(800)
       this.currentPage = cpage
     },
-    vehicleHandler (value, row, column) {
-      const property = column['property']
-      return row[property] === value
-    },
     causeType (value) {
       // console.log(value[1])
       this.index_cause_type = value[1]
-      console.log(this.index_cause_type)
+      // console.log(this.index_cause_type)
+    },
+    filterTagTable (filters) {
+      if (filters.aStatus) {
+        // this.listQuery.status = filters.aStatus[0]
+        console.log('aaa')
+      }
+      this.getAll() // 筛选所选项下的所有数据，需要调用后端接口
     },
     handleSubmit (index, row) {
       let that = this
@@ -234,7 +263,7 @@ export default {
             instance.confirmButtonLoading = true
             instance.confirmButtonText = '执行中...'
             setTimeout(() => {
-              console.log(that.index_cause_type)
+              // console.log(that.index_cause_type)
               that.axios
                 .post(
                   '/api/vehicle/handle',
@@ -244,7 +273,7 @@ export default {
                   }
                 )
                 .then(function (data) {
-                  console.log(data)
+                  // console.log(data)
                 })
                 .catch(function (err) {
                   that.$message({
@@ -288,18 +317,27 @@ export default {
   mounted () {
     let type = 'e_stop'
     this.getData(type)
+    this.getLIst()
   }
 }
 </script>
 <style>
+.change-vehicle {
+  position: absolute;
+  top: 0;
+  left: 300px;
+}
 .el-pagination {
+  position: absolute;
+  top: -30px;
+  right: 0;
   white-space: nowrap;
   padding: 2px 5px;
   color: #303133;
   font-weight: 700;
   text-align: right;
   margin: 30px auto;
-  padding-right: 340px;
+  padding-right: 160px;
 }
 .el-table td,
 .el-table th {

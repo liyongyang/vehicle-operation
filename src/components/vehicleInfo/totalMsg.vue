@@ -105,6 +105,7 @@ export default {
         .then(function (data) {
           // console.log(data)
           that.options = data.datas
+          bus.$emit('vehicle', data.datas)
           // console.log(that.options[0])
         })
         .catch(function (err) {

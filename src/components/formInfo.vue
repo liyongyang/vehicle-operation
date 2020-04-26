@@ -10,15 +10,20 @@
                  name="checkData">
       <checkPage></checkPage>
     </el-tab-pane>
+    <el-tab-pane label="车辆检查日志"
+                 name="checkLog">
+      <checkLog></checkLog>
+    </el-tab-pane>
   </el-tabs>
 </template>
 
 <script>
-import checkPage from './formInfo/checkPage'
 import TEform from './formInfo/TEform'
+import checkPage from './formInfo/checkPage'
+import checkLog from './formInfo/checkLog'
 export default {
   components: {
-    TEform, checkPage
+    TEform, checkPage, checkLog
   },
   data () {
     return {

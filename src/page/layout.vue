@@ -56,7 +56,7 @@ export default {
 }
 
 .el-main {
-  height: 1100px;
+  height: 1090px;
   color: #333;
   background-color: #f6f7f6;
 }

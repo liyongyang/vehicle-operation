@@ -101,7 +101,6 @@ export default {
           }
         )
         .then(function (data) {
-          console.log(data)
           that.dailyData = data.datas
           bus.$emit('dailyData', that.dailyData)
         })
