@@ -25,6 +25,7 @@ export default {
   components: {
     TEform, checkPage, checkLog
   },
+
   data () {
     return {
       activeName: 'E_stop',
@@ -50,9 +51,6 @@ export default {
   },
   // 生命周期 - 挂载完成（可以访问DOM元素）
   mounted () {
-    // this.$nextTick(function () {
-    //   this.getData()
-    // })
   }
 }
 </script>

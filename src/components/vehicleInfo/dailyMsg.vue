@@ -8,8 +8,8 @@
                    @change="getVehicle_id()">
           <el-option v-for="item in options"
                      :key="item.index"
-                     :label="item.label"
-                     :value="item">
+                     :label="item.value"
+                     :value="item.value">
           </el-option>
         </el-select>
       </div>
@@ -56,20 +56,14 @@ export default {
       let that = this
       this.axios
         .get(
-          '/api/vehicle/draw-list',
+          '/api/vehicle/draw-list-vehicle',
           {},
           {
             useLoading: true
           }
         )
         .then(function (data) {
-          for (let i = 0; i < data.datas.length; i++) {
-            for (let j = 0; j < data.datas[i].children.length; j++) {
-              that.arr.push(data.datas[i].children[j].value)
-            }
-          }
-          let vehicleArr = Array.from(new Set(that.arr))
-          that.options = vehicleArr
+          that.options = data.datas
         })
         .catch(function (err) {
           that.$message({

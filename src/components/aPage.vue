@@ -1,9 +1,5 @@
 <template>
   <div class='apage'>
-    <!-- <div id="myChart1"
-         style="width: 1200px;height: 1000px;" >
-    </div> -->
-    <h2>apage</h2>
   </div>
 </template>
 

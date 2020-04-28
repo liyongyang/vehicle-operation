@@ -18,8 +18,8 @@
                @change="getData">
       <el-option v-for="item in vehicle"
                  :key="item.index"
-                 :label="item.label"
-                 :value="item">
+                 :label="item.value"
+                 :value="item.value">
       </el-option>
     </el-select>
     <el-pagination @size-change="handleSizeChange"
@@ -90,10 +90,12 @@
                        label="tag"
                        width="360">
         <template slot-scope="scope">
-          <el-tag v-if="scope.row.cause_type !== null"
+          <el-tag v-if="scope.row.cause_type != null"
                   type="info"
+                  closable
                   effect="dark"
-                  disable-transitions>{{scope.row.cause_type}}</el-tag>
+                  @close="handleClose(scope.$index, scope.row)"
+                  :disable-transitions="true">{{scope.row.cause_type}}</el-tag>
           <div v-else
                id="typeChoose">
             <el-cascader :options="cause_type"
@@ -116,7 +118,7 @@
           <el-button size="mini"
                      :plain="true"
                      type="success"
-                     @click="handleSubmit(scope.$index, scope.row,)">submit</el-button>
+                     @click="handleSubmit(scope.$index, scope.row)">submit</el-button>
           <el-button size="mini"
                      type="danger"
                      @click="handleDelete(scope.$index, scope.row)">ignore</el-button>
@@ -142,6 +144,7 @@ export default {
       arr: [],
       vehicle: [],
       cause_type: [],
+      tagc: true,
       index_cause_type: ''
     }
   },
@@ -170,20 +173,14 @@ export default {
       let that = this
       this.axios
         .get(
-          '/api/vehicle/draw-list',
+          '/api/vehicle/draw-list-vehicle',
           {},
           {
             useLoading: true
           }
         )
         .then(function (data) {
-          for (let i = 0; i < data.datas.length; i++) {
-            for (let j = 0; j < data.datas[i].children.length; j++) {
-              that.arr.push(data.datas[i].children[j].value)
-            }
-          }
-          let vehicleArr = Array.from(new Set(that.arr))
-          that.vehicle = vehicleArr
+          that.vehicle = data.datas
         })
         .catch(function (err) {
           that.$message({
@@ -232,10 +229,11 @@ export default {
       this.openFullScreen(800)
       this.currentPage = cpage
     },
+    handleClose (index, row) {
+      row.cause_type = null
+    },
     causeType (value) {
-      // console.log(value[1])
       this.index_cause_type = value[1]
-      // console.log(this.index_cause_type)
     },
     filterTagTable (filters) {
       if (filters.aStatus) {

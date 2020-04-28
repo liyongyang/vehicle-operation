@@ -23,6 +23,7 @@ export default {
     navmenu: NavMenu,
     Vheader: Header
   },
+
   data () {
     return {
       activeIndex: '1',

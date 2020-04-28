@@ -1,6 +1,5 @@
 <template>
   <div class='bpage'>
-    <h2>bpage</h2>
   </div>
 </template>
 
