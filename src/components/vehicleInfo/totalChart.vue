@@ -1,7 +1,28 @@
 <template>
   <div class="echarts">
+    <!-- <el-card v-for="(item, key) in oneData"
+             :index="item.index"
+             :key="item.index">
+      <h4 v-text="key"></h4>
+      <h2 v-text="item">
+      </h2>
+    </el-card> -->
     <div id="myChart1"
-         style="width: 2000px;height: 800px;"></div>
+         style="width: 1600px;height: 600px;"></div>
+    <!-- <el-table :data="oneData"
+              style="width: 100%">
+      <el-table-column prop="vehicle_id"
+                       label="vehicle_id"
+                       width="180">
+      </el-table-column>
+      <el-table-column prop="run_mileage"
+                       label="run_mileage"
+                       width="180">
+      </el-table-column>
+      <el-table-column prop="bag_size"
+                       label="bag_size">
+      </el-table-column>
+    </el-table> -->
   </div>
 </template>
 <script>
@@ -21,6 +42,7 @@ export default {
       park_id: '',
       vehicle_id: '',
       allData: [],
+      oneData: [],
       dayData: [],
       total_running_time: [],
       total_running_length: [],
@@ -176,6 +198,11 @@ export default {
   mounted () {
     bus.$on('allData', res => {
       this.allData = res
+      // for (let i = 0; i < this.allData[0].length; i++) {
+      //   this.oneData.push(this.allData[0][i])
+      // }
+      // this.oneData = this.allData[0]
+      // console.log(this.oneData)
       for (let i = 0; i < res.length; i++) {
         this.$nextTick(function () {
           this.dayData[i] = res[i].day

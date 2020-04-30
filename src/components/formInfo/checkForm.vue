@@ -1,103 +1,106 @@
 <template>
   <div class='check-form'>
-    <el-form v-show="this.vehicle_id"
-             ref="form"
-             :model="form"
-             :rules="rules"
-             label-width="180px">
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="填表人"
-                        prop="operator">
-            <el-col :span="12">
-              <el-input v-model="form.operator"></el-input>
-            </el-col>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="出车日期"
-                        required>
-            <el-col :span="11">
-              <el-form-item prop="day">
-                <el-date-picker type="date"
-                                placeholder="选择日期"
-                                v-model="form.day"
-                                format="yyyy.MM.dd"
-                                value-format="yyyy.MM.dd"
-                                style="width: 100%;"></el-date-picker>
-              </el-form-item>
-            </el-col>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <div class="top-item">
-        <div class="opitem">
-          <el-divider content-position="left"><i class="el-icon-edit"></i>静态检查项目</el-divider>
-          <el-row v-for="item in this.options.static"
-                  :index="item.index"
-                  :key="item.index">
-            <el-col :span="12">
-              <el-form-item>
-                <span slot="label"
-                      v-text="item.name"></span>
-                <el-tooltip class="item"
-                            effect="dark"
-                            placement="top-start">
-                  <span slot="content"
-                        v-text="item.description"></span>
-                  <el-select v-model="item.status">
-                    <el-option label="OK"
-                               value="0"></el-option>
-                    <el-option label="有问题"
-                               value="1"></el-option>
-                  </el-select>
-                </el-tooltip>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-input v-model="item.comment"
-                        v-show="item.status == 1"
-                        placeholder="填写详细信息"></el-input>
-            </el-col>
-          </el-row>
+    <transition name="el-zoom-in-top">
+      <el-form v-show="this.vehicle_id"
+               class="transition-box"
+               ref="form"
+               :model="form"
+               :rules="rules"
+               label-width="180px">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="填表人"
+                          prop="operator">
+              <el-col :span="12">
+                <el-input v-model="form.operator"></el-input>
+              </el-col>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="出车日期"
+                          required>
+              <el-col :span="11">
+                <el-form-item prop="day">
+                  <el-date-picker type="date"
+                                  placeholder="选择日期"
+                                  v-model="form.day"
+                                  format="yyyy.MM.dd"
+                                  value-format="yyyy.MM.dd"
+                                  style="width: 100%;"></el-date-picker>
+                </el-form-item>
+              </el-col>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <div class="top-item">
+          <div class="opitem">
+            <el-divider content-position="left"><i class="el-icon-edit"></i>静态检查项目</el-divider>
+            <el-row v-for="item in this.options.static"
+                    :index="item.index"
+                    :key="item.index">
+              <el-col :span="12">
+                <el-form-item>
+                  <span slot="label"
+                        v-text="item.name"></span>
+                  <el-tooltip class="item"
+                              effect="dark"
+                              placement="top-start">
+                    <span slot="content"
+                          v-text="item.description"></span>
+                    <el-select v-model="item.status">
+                      <el-option label="OK"
+                                 value="0"></el-option>
+                      <el-option label="有问题"
+                                 value="1"></el-option>
+                    </el-select>
+                  </el-tooltip>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-input v-model="item.comment"
+                          v-show="item.status == 1"
+                          placeholder="填写详细信息"></el-input>
+              </el-col>
+            </el-row>
+          </div>
+          <div class="opitem">
+            <el-divider content-position="left"><i class="el-icon-edit"></i>动态检查项目</el-divider>
+            <el-row v-for="item in this.options.dynamic"
+                    :index="item.index"
+                    :key="item.index">
+              <el-col :span="12">
+                <el-form-item>
+                  <span slot="label"
+                        v-text="item.name"></span>
+                  <el-tooltip class="item"
+                              effect="dark"
+                              placement="top-start">
+                    <span slot="content"
+                          v-text="item.description"></span>
+                    <el-select v-model="item.status">
+                      <el-option label="OK"
+                                 value="0"></el-option>
+                      <el-option label="有问题"
+                                 value="1"></el-option>
+                    </el-select>
+                  </el-tooltip>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-input v-model="item.comment"
+                          v-show="item.status == 1"
+                          placeholder="填写详细信息"></el-input>
+              </el-col>
+            </el-row>
+          </div>
         </div>
-        <div class="opitem">
-          <el-divider content-position="left"><i class="el-icon-edit"></i>动态检查项目</el-divider>
-          <el-row v-for="item in this.options.dynamic"
-                  :index="item.index"
-                  :key="item.index">
-            <el-col :span="12">
-              <el-form-item>
-                <span slot="label"
-                      v-text="item.name"></span>
-                <el-tooltip class="item"
-                            effect="dark"
-                            placement="top-start">
-                  <span slot="content"
-                        v-text="item.description"></span>
-                  <el-select v-model="item.status">
-                    <el-option label="OK"
-                               value="0"></el-option>
-                    <el-option label="有问题"
-                               value="1"></el-option>
-                  </el-select>
-                </el-tooltip>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-input v-model="item.comment"
-                        v-show="item.status == 1"
-                        placeholder="填写详细信息"></el-input>
-            </el-col>
-          </el-row>
-        </div>
-      </div>
-      <el-col style="text-align: center">
-        <el-button type="success"
-                   round
-                   @click="onSubmit1('form')"> 确 定 </el-button>
-      </el-col>
-    </el-form>
+        <el-col style="text-align: center">
+          <el-button type="success"
+                     round
+                     @click="onSubmit1('form')"> 确 定 </el-button>
+        </el-col>
+      </el-form>
+    </transition>
     <el-drawer :visible.sync="drawer"
                :with-header="false"
                :before-close="handleClose"
@@ -145,16 +148,25 @@
                    style="margin: 10px auto;">SUBMIT</el-button>
       </div>
     </el-drawer>
+    <el-row :gutter="12"
+            v-show="!this.vehicle_id">
+      <el-col :span="8">
+        <el-card shadow="always">
+          <i class="el-icon-edit"></i> 请先选择车辆再填写日常检查表喔~
+        </el-card>
+      </el-col>
+    </el-row>
+    <!-- <checkLog v-show="!this.vehicle_id"></checkLog> -->
   </div>
 </template>
 
 <script>
-
+import checkLog from './checkLog'
 export default {
   props: {
     vehicle_id: String
   },
-  components: {},
+  components: { checkLog },
   inject: ['reload'],
   data () {
     return {

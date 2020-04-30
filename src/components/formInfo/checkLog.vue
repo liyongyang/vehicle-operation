@@ -1,17 +1,55 @@
 <template>
   <div class='checkLog'>
-    <!-- <div v-for="items in this.tableData"
-         :index="items.index"
-         :key="items.index">
-      <div v-for="item in items.info"
-           :index="item.index"
-           :key="item.index">
-        <span>{{item.name}} </span> <span>{{item.comment}} </span>
-      </div>
-    </div> -->
+    <el-table border
+              :data="tableData"
+              style="width: 100%"
+              height="1200"
+              :row-class-name="tableRowClassName">
+      <el-table-column prop="created_at"
+                       label="日期"
+                       width="200">
+      </el-table-column>
+      <el-table-column prop="vehicle_id"
+                       label="车辆"
+                       width="200">
+        <template slot-scope="scope">
+          <el-tag type="success"
+                  effect="dark">{{scope.row.vehicle_id}}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="operator"
+                       label="提交人"
+                       width="200">
+        <template slot-scope="scope">
+          <el-tag effect="dark">{{scope.row.operator}}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="异常信息">
+        <template slot-scope="props">
+          <el-table :data="props.row.info"
+                    style="width: 100%"
+                    :row-class-name="tableRowClassName">
+            <el-table-column label="检查项">
+              <template slot-scope="scope">
+                <span>{{scope.row.name}}:</span>
+                <span style="color: #F56C6C">{{scope.row.comment}}</span>
+              </template>
+            </el-table-column>
+          </el-table>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作"
+                       width="300">
+        <template slot-scope="scope">
+          <el-button @click="handleClick(scope.row)"
+                     type="danger"
+                     size="small"
+                     round>处理中 <i class="el-icon-loading"></i></el-button>
+        </template>
+      </el-table-column>
+    </el-table>
   </div>
 </template>
-
 <script>
 
 export default {
@@ -40,6 +78,12 @@ export default {
         .then(function (data) {
           that.tableData = data.datas
           // console.log(that.tableData)
+          // for (let i = 0; i < data.datas.length; i++) {
+          // for (let j = 0; j < data.datas[i].info.length; j++) {
+          // that.info.push(data.datas[i].info)
+          // }
+          // }
+          // console.log(that.info)
         })
         .catch(function (err) {
           that.$message({
@@ -49,12 +93,18 @@ export default {
         })
     },
     tableRowClassName ({ row, rowIndex }) {
-      if (rowIndex === 1) {
+      if (rowIndex === 0) {
         return 'warning-row'
-      } else if (rowIndex === 3) {
+      } else if (rowIndex === 1) {
         return 'success-row'
       }
       return ''
+    },
+    handleClick (row) {
+      this.$message({
+        message: '开发中...',
+        type: 'error'
+      })
     }
   },
   // 生命周期 - 创建完成（可以访问当前this实例）
@@ -69,10 +119,9 @@ export default {
 </script>
 <style scoped>
 .el-table .warning-row {
-  background: oldlace;
+  background: rgb(57, 201, 117);
 }
-
 .el-table .success-row {
-  background: #f0f9eb;
+  background: rgb(64, 207, 233);
 }
 </style>
