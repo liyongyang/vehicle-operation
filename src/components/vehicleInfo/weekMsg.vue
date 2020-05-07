@@ -1,6 +1,6 @@
 <template>
   <div class="daily-msg">
-    <div class="header">
+    <!-- <div class="header">
       <div class="nav-search">
         <i class="el-icon-location-information"></i>
         <el-select v-model="vehicle_id"
@@ -19,16 +19,16 @@
         <el-breadcrumb-item v-model="vehicle_item"
                             v-text="vehicle_item"></el-breadcrumb-item>
       </el-breadcrumb>
-    </div>
-    <dailyChart :dailyData=dailyData></dailyChart>
+    </div> -->
+    <weekChart :dailyData=dailyData></weekChart>
   </div>
 </template>
 
 <script>
-import bus from '../util/msgbus'
-import dailyChart from './dailyChart'
+// import bus from '../util/msgbus'
+import weekChart from './weekChart'
 export default {
-  components: { dailyChart },
+  components: { weekChart },
   data () {
     return {
       arr: [],
@@ -96,7 +96,7 @@ export default {
         )
         .then(function (data) {
           that.dailyData = data.datas
-          bus.$emit('dailyData', that.dailyData)
+          // bus.$emit('dailyData', that.dailyData)
         })
         .catch(function (err) {
           that.$message({
