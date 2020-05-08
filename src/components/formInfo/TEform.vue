@@ -201,7 +201,6 @@ export default {
         )
         .then(function (data) {
           that.formData = data.datas.real.result
-          // console.log(that.formData)
           that.cause_type = data.datas.cause_type
         })
         .catch(function (err) {

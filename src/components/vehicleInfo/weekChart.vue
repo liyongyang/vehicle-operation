@@ -1,52 +1,88 @@
 <template>
-  <div class="echarts">
-    <div id="myChart1"
+  <div class="dailyMsg container-fluid">
+    <div style="height:180px">
+      <el-card class="box-card"
+               style="width: 240px;height:100px;float:left;margin:5px 10px"
+               v-for="(item,index) in single"
+               :key="item.index">
+        <div class="topic">
+          <img :src="'/static/icons/'+index+'.png'"
+               alt=""
+               srcset="" />
+          <div>
+            <h6>T_{{index}}:</h6>
+            <strong>{{item}}</strong>
+          </div>
+        </div>
+      </el-card>
+    </div>
+    <div v-if="single"
+         id="myChart1"
          style="width: 2000px;height: 800px;"></div>
+    <el-card v-else
+             class="empty">
+      <img src="/static/icons/accident_counts.png"
+           style="width: 45px;height:45px;margin:0 auto"
+           alt=""
+           srcset="">
+      <p><strong>无测试数据...</strong></p>
+
+    </el-card>
   </div>
 </template>
+
 <script>
-import bus from '../util/msgbus'
+// import bus from '../util/msgbus'
 import echarts from 'echarts'
 export default {
-  // props: {
-  //   'allData': Array
-  // },
-  components: {
+  props: {
+    'single': {},
+    'arrayData': Array,
+    'vehicle_id': String
   },
-  name: 'echarts',
+  components: {},
   data () {
     return {
-      isShow: false,
-      activeName: 'week',
-      park_id: '',
-      vehicle_id: '',
-      allData: [],
+      isEmpty: true,
       dayData: [],
-      total_running_time: [],
-      total_running_length: [],
-      total_jira_commit_counts: [],
-      total_take_over_counts: [],
-      total_emergency_stop_counts: [],
-      total_take_over_duration: [],
-      total_emergency_stop_duration: [],
-      total_fault_counts: [],
-      total_accident_counts: []
+      run_time: [],
+      run_mileage: [],
+      jira: [],
+      bag_size: [],
+      takeover: [],
+      E_stop: [],
+      //
+      fault_counts: [],
+      accident_counts: []
     }
   },
   // 监听
-  computed: {
-  },
+  computed: {},
   // 监控
   watch: {
-    allData (e) {
-      this.dayData = []
-      this.drawPie1('myChart1')
+    single () {
+      if (this.single) {
+        this.$nextTick(() => {
+          Object.assign(this.$data, this.$options.data())
+          for (let i = 0; i < this.arrayData.length; i++) {
+            this.dayData.push(this.arrayData[i].day)
+            this.run_time.push(this.arrayData[i].run_time)
+            this.run_mileage.push(this.arrayData[i].run_mileage)
+            this.jira.push(this.arrayData[i].jira)
+            this.takeover.push(this.arrayData[i].takeover)
+            this.E_stop.push(this.arrayData[i].E_stop)
+            this.bag_size.push(this.arrayData[i].bag_size)
+            this.fault_counts.push(this.arrayData[i].fault_counts)
+            this.accident_counts.push(this.arrayData[i].accident_counts)
+          }
+          this.drawPie1('myChart1')
+        })
+      } else {
+      }
     }
   },
+  // 方法
   methods: {
-    isdisply () {
-      this.isShow = true
-    },
     drawPie1 (id) {
       this.mychart1 = echarts.init(document.getElementById('myChart1'))
       this.mychart1.setOption({
@@ -66,6 +102,7 @@ export default {
         /* 图例说明 */
         legend: {
           // 图例排项 vertical-"竖向"; horizontal-"横向"
+          selected: { '接管次数': false, '急停次数': false, 'jira': false, 'bag_size': false },
           orient: 'horizontal',
           // 图例组件离容器左侧的距离
           left: 500,
@@ -75,7 +112,7 @@ export default {
             color: '#000000'
           },
           // 与series中每个name对应
-          data: ['运营时间', '运营里程', '接管次数', '急停次数', '接管时间', '急停时间']
+          data: ['运营时间', '运营里程', '接管次数', '急停次数', 'jira', 'bag_size']
         },
         xAxis: {
           data: this.dayData
@@ -106,7 +143,7 @@ export default {
             fontSize: 28,
             borderWidth: 1,
             color: '#3300CC',
-            data: this.total_running_time,
+            data: this.run_time,
             markLine: {
               data: [
                 { type: 'average', name: '平均值' }
@@ -118,7 +155,7 @@ export default {
             type: 'line',
             borderWidth: 1,
             color: '#009966',
-            data: this.total_running_length,
+            data: this.run_mileage,
             markLine: {
               data: [
                 { type: 'average', name: '平均值' }
@@ -131,7 +168,7 @@ export default {
             fontSize: 28,
             borderWidth: 1,
             color: '#FF6666',
-            data: this.total_take_over_counts,
+            data: this.takeover,
             markLine: {
               data: [
                 { type: 'average', name: '平均值' }
@@ -143,7 +180,7 @@ export default {
             type: 'line',
             borderWidth: 1,
             color: '#FF00FF',
-            data: this.total_emergency_stop_counts,
+            data: this.E_stop,
             markLine: {
               data: [
                 { type: 'average', name: '平均值' }
@@ -151,52 +188,56 @@ export default {
             }
           },
           {
-            name: '接管时间',
+            name: 'jira',
             type: 'line',
             fontSize: 28,
             borderWidth: 1,
             color: '#CC6600',
-            data: this.total_take_over_duration
+            data: this.jira
           },
           {
-            name: '急停时间',
+            name: 'bag_size',
             type: 'line',
             borderWidth: 1,
             color: '#6600CC',
-            data: this.total_emergency_stop_duration
+            data: this.bag_size
           }
         ]
       })
     }
   },
   // 生命周期 - 创建完成（可以访问当前this实例）
-  created () {
-  },
+  created () { },
   // 生命周期 - 挂载完成（可以访问DOM元素）
   mounted () {
-    bus.$on('allData', res => {
-      this.allData = res
-      for (let i = 0; i < res.length; i++) {
-        this.$nextTick(function () {
-          this.dayData[i] = res[i].day
-          this.total_running_time[i] = res[i].run_time
-          this.total_running_length[i] = res[i].run_mileage
-          this.total_jira_commit_counts[i] = res[i].jira
-          this.total_take_over_counts[i] = res[i].takeover
-          this.total_emergency_stop_counts[i] = res[i].E_stop
-          this.total_take_over_duration[i] = res[i].takeover_time
-          this.total_emergency_stop_duration[i] = res[i].ES_time
-          this.total_fault_counts[i] = res[i].fault_counts
-          this.total_accident_counts[i] = res[i].accident_counts
-        })
-      }
-      // console.log(this.total_running_length)
-      this.$nextTick(function () {
-        this.drawPie1('myChart1')
-      })
-    })
+    // console.log(this.allData)
   }
 }
 </script>
 <style scoped>
+.topic {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.topic > img {
+  width: 45px;
+  height: 45px;
+}
+.box-card {
+  border-radius: 8px;
+}
+.empty {
+  width: 440px;
+  height: 180px;
+  line-height: 60px;
+  text-align: center;
+  margin: 0 auto;
+  border: none;
+  background-color: #f6f7f6;
+  box-shadow: none;
+  color: #60656d;
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
+}
 </style>

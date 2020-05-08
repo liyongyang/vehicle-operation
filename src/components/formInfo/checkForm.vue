@@ -148,14 +148,23 @@
                    style="margin: 10px auto;">SUBMIT</el-button>
       </div>
     </el-drawer>
-    <el-row :gutter="12"
+    <!-- <el-row :gutter="12"
             v-show="!this.vehicle_id">
       <el-col :span="8">
         <el-card shadow="always">
           <i class="el-icon-edit"></i> 请先选择车辆再填写日常检查表喔~
         </el-card>
       </el-col>
-    </el-row>
+    </el-row> -->
+    <el-card v-show="!this.vehicle_id"
+             class="empty">
+      <img src="/static/icons/accident_counts.png"
+           style="width: 45px;height:45px;margin:0 auto"
+           alt=""
+           srcset="">
+      <p><strong>请先选择车辆再填写日常检查表喔~</strong></p>
+
+    </el-card>
     <!-- <checkLog v-show="!this.vehicle_id"></checkLog> -->
   </div>
 </template>
@@ -316,5 +325,18 @@ export default {
 }
 .drawerform {
   padding: 30% 0;
+}
+.empty {
+  width: 440px;
+  height: 180px;
+  line-height: 60px;
+  text-align: center;
+  margin: 0 auto;
+  border: none;
+  background-color: #f6f7f6;
+  box-shadow: none;
+  color: #60656d;
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
 }
 </style>

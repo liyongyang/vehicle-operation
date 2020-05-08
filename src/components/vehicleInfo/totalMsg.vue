@@ -1,6 +1,13 @@
 <template>
   <div class="total">
     <div class="total-option">
+      <!-- <div class="block">
+        <i class="el-icon-location-information"></i>
+        <el-cascader v-model="totalInfo"
+                     :options="options"
+                     :props="{ expandTrigger: 'hover' }"
+                     @change="getData"></el-cascader>
+      </div> -->
       <div class="block">
         <i class="el-icon-location-information"></i>
         <el-cascader v-model="totalInfo"
@@ -138,6 +145,7 @@ export default {
   // 生命周期 - 挂载完成（可以访问DOM元素）
   mounted () {
     this.getLIst()
+    // this.getData()
   }
 }
 </script>

@@ -26,7 +26,9 @@
       </el-table-column>
       <el-table-column label="异常信息">
         <template slot-scope="props">
-          <el-table :data="props.row.info"
+          <span v-if="props.row.info =='' ">车辆日常检查无异常</span>
+          <el-table v-else
+                    :data="props.row.info"
                     style="width: 100%"
                     :row-class-name="tableRowClassName">
             <el-table-column label="检查项">
@@ -41,7 +43,15 @@
       <el-table-column label="操作"
                        width="300">
         <template slot-scope="scope">
-          <el-button @click="handleClick(scope.row)"
+          <el-button v-if="scope.row.info =='' "
+                     plain
+                     disabled
+                     @click="handleClick(scope.row)"
+                     type="danger"
+                     size="small"
+                     round>车辆检查正常</el-button>
+          <el-button v-else
+                     @click="handleClick(scope.row)"
                      type="danger"
                      size="small"
                      round>处理中 <i class="el-icon-loading"></i></el-button>
@@ -101,6 +111,7 @@ export default {
       return ''
     },
     handleClick (row) {
+      console.log(row)
       this.$message({
         message: '开发中...',
         type: 'error'
