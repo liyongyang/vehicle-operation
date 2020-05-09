@@ -1,34 +1,23 @@
 <template>
-  <div class='bpage'>
-  </div>
+  <div class="bpage"></div>
 </template>
 
 <script>
-
 export default {
   components: {},
   data () {
-    return {
-
-    }
+    return {}
   },
   // 监听
   computed: {},
   // 监控
   watch: {},
   // 方法
-  methods: {
-
-  },
+  methods: {},
   // 生命周期 - 创建完成（可以访问当前this实例）
-  created () {
-
-  },
+  created () { },
   // 生命周期 - 挂载完成（可以访问DOM元素）
-  mounted () {
-
-  }
+  mounted () { }
 }
 </script>
-<style scoped>
-</style>
+<style scoped></style>
